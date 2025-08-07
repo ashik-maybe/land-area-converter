@@ -51,6 +51,41 @@ class LandConverter {
             'sqlink': 'Square Link',
             'sqhat': 'Square Hat'
         };
+
+        // Bengali unit names
+        this.bengaliUnits = {
+            'katha': 'কাঠা',
+            'bigha': 'বিঘা',
+            'decimal': 'ডেসিমেল',
+            'shotok': 'শতক',
+            'paki': 'পাকি',
+            'kattah': 'কাট্টা',
+            'kani': 'কানি',
+            'gonda': 'গন্ডা',
+            'kora': 'কোরা',
+            'kranti': 'ক্রান্তি',
+            'til': 'তিল',
+            'ojutangsho': 'অজুতাংশ',
+            'acre': 'একর',
+            'hectare': 'হেক্টর',
+            'sqft': 'বর্গফুট',
+            'sqmeter': 'বর্গমিটার',
+            'sqyard': 'বর্গগজ',
+            'sqinch': 'বর্গইঞ্চি',
+            'sqlink': 'বর্গলিংক',
+            'sqhat': 'বর্গহাট'
+        };
+
+        // Bengali labels
+        this.bengaliLabels = {
+            'converterTitle': 'বাংলাদেশি জমি পরিমাপ কনভার্টার',
+            'enterValue': 'মান লিখুন:',
+            'fromUnit': 'একক থেকে:',
+            'convertBtn': 'রূপান্তর করুন',
+            'resultsTitle': 'রূপান্তর ফলাফল:',
+            'commonConversions': 'সাধারণ রূপান্তর',
+            'conversionResults': 'রূপান্তর ফলাফল:'
+        };
     }
 
     // Convert from any unit to Square Feet
@@ -76,13 +111,13 @@ class LandConverter {
     }
 
     // Get unit display name
-    getUnitName(unit) {
+    getUnitName(unit, language = 'en') {
+        if (language === 'bn' && this.bengaliUnits[unit]) {
+            return this.bengaliUnits[unit];
+        }
         return this.unitNames[unit] || unit;
     }
 }
-
-// Initialize converter
-const converter = new LandConverter();
 
 // Theme management
 class ThemeManager {
@@ -113,6 +148,100 @@ class ThemeManager {
         this.themeToggle.textContent = this.currentTheme === 'light' ? '🌙' : '☀️';
     }
 }
+
+// Language management
+class LanguageManager {
+    constructor(converter) {
+        this.converter = converter;
+        this.currentLanguage = localStorage.getItem('language') || 'en';
+        this.languageToggle = document.getElementById('languageToggle');
+        this.init();
+    }
+
+    init() {
+        this.updateToggleText();
+        this.languageToggle.addEventListener('click', () => this.toggleLanguage());
+        this.applyLanguage();
+    }
+
+    toggleLanguage() {
+        this.currentLanguage = this.currentLanguage === 'en' ? 'bn' : 'en';
+        localStorage.setItem('language', this.currentLanguage);
+        this.updateToggleText();
+        this.applyLanguage();
+        // Re-run conversion to update display
+        convert();
+    }
+
+    updateToggleText() {
+        this.languageToggle.textContent = this.currentLanguage === 'en' ? '🇧🇩 বাংলা' : '🇺🇸 English';
+    }
+
+    applyLanguage() {
+        if (this.currentLanguage === 'bn') {
+            document.body.classList.add('bengali-mode');
+            // Update static text
+            document.querySelector('.header h1').textContent = this.converter.bengaliLabels.converterTitle;
+            document.querySelector('label[for="value"]').textContent = this.converter.bengaliLabels.enterValue;
+            document.querySelector('label[for="fromUnit"]').textContent = this.converter.bengaliLabels.fromUnit;
+            document.querySelector('.convert-btn').textContent = this.converter.bengaliLabels.convertBtn;
+            document.querySelector('.results h3').textContent = this.converter.bengaliLabels.resultsTitle;
+            document.querySelector('.popular-conversions h3').textContent = this.converter.bengaliLabels.commonConversions;
+            // Update unit names in dropdown
+            this.updateDropdownText();
+        } else {
+            document.body.classList.remove('bengali-mode');
+            // Reset to English
+            document.querySelector('.header h1').textContent = 'Bangladeshi Land Measurement Converter';
+            document.querySelector('label[for="value"]').textContent = 'Enter Value:';
+            document.querySelector('label[for="fromUnit"]').textContent = 'From Unit:';
+            document.querySelector('.convert-btn').textContent = 'Convert';
+            document.querySelector('.results h3').textContent = 'Conversion Results:';
+            document.querySelector('.popular-conversions h3').textContent = '💡 Common Conversions';
+            this.updateDropdownText();
+        }
+    }
+
+    updateDropdownText() {
+        const select = document.getElementById('fromUnit');
+        const options = select.options;
+        for (let i = 0; i < options.length; i++) {
+            const unit = options[i].value;
+            if (this.currentLanguage === 'bn' && this.converter.bengaliUnits[unit]) {
+                options[i].textContent = this.converter.bengaliUnits[unit];
+            } else {
+                options[i].textContent = this.converter.getUnitName(unit, 'en');
+            }
+        }
+    }
+
+    getUnitName(unit) {
+        return this.converter.getUnitName(unit, this.currentLanguage);
+    }
+
+    getLabel(key) {
+        if (this.currentLanguage === 'bn' && this.converter.bengaliLabels[key]) {
+            return this.converter.bengaliLabels[key];
+        }
+        // English fallback
+        const englishLabels = {
+            'converterTitle': 'Bangladeshi Land Measurement Converter',
+            'enterValue': 'Enter Value:',
+            'fromUnit': 'From Unit:',
+            'convertBtn': 'Convert',
+            'resultsTitle': 'Conversion Results:',
+            'commonConversions': '💡 Common Conversions',
+            'conversionResults': 'Conversion Results:'
+        };
+        return englishLabels[key] || key;
+    }
+}
+
+// Initialize converter
+const converter = new LandConverter();
+
+// Global language manager reference
+let languageManager;
 
 function convert() {
     const inputValue = parseFloat(document.getElementById('value').value);
@@ -145,12 +274,15 @@ function displayResults(results, inputValue, fromUnit) {
     let html = '';
 
     for (let category in categories) {
-        html += `<div class="category-header">${category}</div>`;
+        const categoryTitle = languageManager.currentLanguage === 'bn' ?
+            (category === 'Traditional Bangladeshi' ? 'ঐতিহ্যবাহী বাংলাদেশী' : 'আন্তর্জাতিক') :
+            category;
+        html += `<div class="category-header">${categoryTitle}</div>`;
         categories[category].forEach(unit => {
             if (unit !== fromUnit) { // Don't show the input unit
                 html += `
                     <div class="result-item">
-                        <span class="unit-name">${converter.getUnitName(unit)}:</span>
+                        <span class="unit-name">${languageManager.getUnitName(unit)}:</span>
                         <span class="unit-value">${formatNumber(results[unit])}</span>
                     </div>
                 `;
@@ -180,10 +312,37 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize theme manager
     new ThemeManager();
 
+    // Initialize language manager
+    languageManager = new LanguageManager(converter);
+
     // Initial conversion
     convert();
 
     // Add real-time conversion when user types
     document.getElementById('value').addEventListener('input', convert);
     document.getElementById('fromUnit').addEventListener('change', convert);
+
+    // PWA installation prompt
+    let deferredPrompt;
+    const addBtn = document.querySelector('.github-btn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+    });
 });
+
+// Register service worker for PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+                console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
