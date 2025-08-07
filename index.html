@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bangladeshi Land Measurement Converter</title>
     <link rel="stylesheet" href="src/style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>">
+    <link rel="icon" href="image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#667eea">
 </head>
@@ -14,6 +14,19 @@
     <div class="floating-controls">
         <button class="control-btn theme-toggle" id="themeToggle">🌙</button>
         <button class="control-btn language-toggle" id="languageToggle">🇧🇩 বাংলা</button>
+    </div>
+
+    <!-- Ultimate Chart Modal -->
+    <div class="modal-overlay" id="chartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 Ultimate Conversion Chart</h2>
+                <button class="modal-close" id="closeModal">×</button>
+            </div>
+            <div class="modal-body" id="chartContent">
+                <!-- Chart content will be populated by JavaScript -->
+            </div>
+        </div>
     </div>
 
     <div class="container">
@@ -40,11 +53,10 @@
                     <option value="gonda">Gonda</option>
                     <option value="kora">Kora</option>
                     <option value="paki">Paki</option>
-
-                    <!-- Sub-units -->
                     <option value="kranti">Kranti</option>
                     <option value="til">Til</option>
                     <option value="ojutangsho">Ojutangsho</option>
+                    <option value="kattah">Kattah</option>
 
                     <!-- International Units -->
                     <option value="acre">Acre</option>
@@ -90,9 +102,9 @@
                     <a href="https://github.com/ashik-maybe" target="_blank" class="github-btn">
                         <span>⭐ Star on GitHub</span>
                     </a>
-                    <a href="#" target="_blank" class="github-btn chart-link">
+                    <button class="github-btn chart-link" id="openChartBtn">
                         <span>📊 Ultimate Chart</span>
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
