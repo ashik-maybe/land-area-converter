@@ -1,15 +1,14 @@
 // Comprehensive conversion system using Square Feet as base unit
 class LandConverter {
     constructor() {
-        // All conversions based on Square Feet
+        // All conversions based on Square Feet (katha and kattah merged as katha)
         this.conversionFactors = {
             // Traditional Bangladeshi Units
-            'katha': 720,           // 1 Katha = 720 sq ft
+            'katha': 720,           // 1 Katha = 720 sq ft (merged katha and kattah)
             'bigha': 14400,         // 1 Bigha = 20 Katha = 14,400 sq ft
             'decimal': 435.6,       // 1 Decimal = 435.6 sq ft
             'shotok': 435.6,        // 1 Shotok = 1 Decimal = 435.6 sq ft
             'paki': 14400,          // 1 Paki = 1 Bigha = 14,400 sq ft
-            'kattah': 720,          // 1 Kattah = 1 Katha = 720 sq ft
             'kani': 17280,          // 1 Kani = 20 Gonda = 17,280 sq ft
             'gonda': 864,           // 1 Gonda = 4 Kora = 864 sq ft
             'kora': 216,            // 1 Kora = 3 Kranti = 216 sq ft
@@ -35,7 +34,6 @@ class LandConverter {
             'decimal': 'Decimal',
             'shotok': 'Shotok',
             'paki': 'Paki',
-            'kattah': 'Kattah',
             'kani': 'Kani',
             'gonda': 'Gonda',
             'kora': 'Kora',
@@ -59,7 +57,6 @@ class LandConverter {
             'decimal': 'ডেসিমেল',
             'shotok': 'শতক',
             'paki': 'পাকি',
-            'kattah': 'কাট্টা',
             'kani': 'কানি',
             'gonda': 'গন্ডা',
             'kora': 'কোরা',
@@ -82,7 +79,8 @@ class LandConverter {
             'enterValue': 'মান লিখুন:',
             'fromUnit': 'একক থেকে:',
             'convertBtn': 'রূপান্তর করুন',
-            'resultsTitle': 'রূপান্তর ফলাফল:',
+            'traditionalUnits': 'ঐতিহ্যবাহী একক',
+            'internationalUnits': 'আন্তর্জাতিক একক',
             'commonConversions': 'সাধারণ রূপান্তর',
             'conversionResults': 'রূপান্তর ফলাফল:'
         };
@@ -185,18 +183,28 @@ class LanguageManager {
             document.querySelector('label[for="value"]').textContent = this.converter.bengaliLabels.enterValue;
             document.querySelector('label[for="fromUnit"]').textContent = this.converter.bengaliLabels.fromUnit;
             document.querySelector('.convert-btn').textContent = this.converter.bengaliLabels.convertBtn;
-            document.querySelector('.results h3').textContent = this.converter.bengaliLabels.resultsTitle;
+            if (document.querySelector('.results-column:first-child h3')) {
+                document.querySelector('.results-column:first-child h3').textContent = this.converter.bengaliLabels.traditionalUnits;
+            }
+            if (document.querySelector('.results-column:last-child h3')) {
+                document.querySelector('.results-column:last-child h3').textContent = this.converter.bengaliLabels.internationalUnits;
+            }
             document.querySelector('.popular-conversions h3').textContent = this.converter.bengaliLabels.commonConversions;
             // Update unit names in dropdown
             this.updateDropdownText();
         } else {
             document.body.classList.remove('bengali-mode');
             // Reset to English
-            document.querySelector('.header h1').textContent = 'Bangladeshi Land Measurement Converter';
+            document.querySelector('.header h1').textContent = '📐 Bangladeshi Land Measurement Converter';
             document.querySelector('label[for="value"]').textContent = 'Enter Value:';
             document.querySelector('label[for="fromUnit"]').textContent = 'From Unit:';
             document.querySelector('.convert-btn').textContent = 'Convert';
-            document.querySelector('.results h3').textContent = 'Conversion Results:';
+            if (document.querySelector('.results-column:first-child h3')) {
+                document.querySelector('.results-column:first-child h3').textContent = 'Traditional Units';
+            }
+            if (document.querySelector('.results-column:last-child h3')) {
+                document.querySelector('.results-column:last-child h3').textContent = 'International Units';
+            }
             document.querySelector('.popular-conversions h3').textContent = '💡 Common Conversions';
             this.updateDropdownText();
         }
@@ -218,23 +226,13 @@ class LanguageManager {
     getUnitName(unit) {
         return this.converter.getUnitName(unit, this.currentLanguage);
     }
+}
 
-    getLabel(key) {
-        if (this.currentLanguage === 'bn' && this.converter.bengaliLabels[key]) {
-            return this.converter.bengaliLabels[key];
-        }
-        // English fallback
-        const englishLabels = {
-            'converterTitle': 'Bangladeshi Land Measurement Converter',
-            'enterValue': 'Enter Value:',
-            'fromUnit': 'From Unit:',
-            'convertBtn': 'Convert',
-            'resultsTitle': 'Conversion Results:',
-            'commonConversions': '💡 Common Conversions',
-            'conversionResults': 'Conversion Results:'
-        };
-        return englishLabels[key] || key;
-    }
+// Random accent color generator
+function setRandomAccent() {
+    const accents = ['1', '2', '3', '4', '5', '6', '7', '8'];
+    const randomAccent = accents[Math.floor(Math.random() * accents.length)];
+    document.documentElement.setAttribute('data-accent', randomAccent);
 }
 
 // Initialize converter
@@ -262,36 +260,43 @@ function convert() {
 }
 
 function displayResults(results, inputValue, fromUnit) {
-    const resultsDiv = document.getElementById('results');
-    const resultList = document.getElementById('resultList');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const traditionalResults = document.getElementById('traditionalResults');
+    const internationalResults = document.getElementById('internationalResults');
 
-    // Sort units by category for better display
-    const categories = {
-        'Traditional Bangladeshi': ['bigha', 'katha', 'kattah', 'paki', 'decimal', 'shotok', 'kani', 'gonda', 'kora', 'kranti', 'til', 'ojutangsho'],
-        'International': ['acre', 'hectare', 'sqft', 'sqmeter', 'sqyard', 'sqinch', 'sqlink', 'sqhat']
-    };
+    // Sort units by category
+    const traditionalUnits = ['bigha', 'katha', 'paki', 'decimal', 'shotok', 'kani', 'gonda', 'kora', 'kranti', 'til', 'ojutangsho'];
+    const internationalUnits = ['acre', 'hectare', 'sqft', 'sqmeter', 'sqyard', 'sqinch', 'sqlink', 'sqhat'];
 
-    let html = '';
+    // Generate traditional units HTML
+    let traditionalHtml = '';
+    traditionalUnits.forEach(unit => {
+        if (unit !== fromUnit) { // Don't show the input unit
+            traditionalHtml += `
+                <div class="result-item">
+                    <span class="unit-name">${languageManager.getUnitName(unit)}:</span>
+                    <span class="unit-value">${formatNumber(results[unit])}</span>
+                </div>
+            `;
+        }
+    });
 
-    for (let category in categories) {
-        const categoryTitle = languageManager.currentLanguage === 'bn' ?
-            (category === 'Traditional Bangladeshi' ? 'ঐতিহ্যবাহী বাংলাদেশী' : 'আন্তর্জাতিক') :
-            category;
-        html += `<div class="category-header">${categoryTitle}</div>`;
-        categories[category].forEach(unit => {
-            if (unit !== fromUnit) { // Don't show the input unit
-                html += `
-                    <div class="result-item">
-                        <span class="unit-name">${languageManager.getUnitName(unit)}:</span>
-                        <span class="unit-value">${formatNumber(results[unit])}</span>
-                    </div>
-                `;
-            }
-        });
-    }
+    // Generate international units HTML
+    let internationalHtml = '';
+    internationalUnits.forEach(unit => {
+        if (unit !== fromUnit) { // Don't show the input unit
+            internationalHtml += `
+                <div class="result-item">
+                    <span class="unit-name">${languageManager.getUnitName(unit)}:</span>
+                    <span class="unit-value">${formatNumber(results[unit])}</span>
+                </div>
+            `;
+        }
+    });
 
-    resultList.innerHTML = html;
-    resultsDiv.style.display = 'block';
+    traditionalResults.innerHTML = traditionalHtml;
+    internationalResults.innerHTML = internationalHtml;
+    resultsContainer.style.display = 'grid';
 }
 
 function formatNumber(num) {
@@ -309,6 +314,9 @@ function formatNumber(num) {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Set random accent color
+    setRandomAccent();
+
     // Initialize theme manager
     new ThemeManager();
 
@@ -322,27 +330,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('value').addEventListener('input', convert);
     document.getElementById('fromUnit').addEventListener('change', convert);
 
-    // PWA installation prompt
-    let deferredPrompt;
-    const addBtn = document.querySelector('.github-btn');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent Chrome 67 and earlier from automatically showing the prompt
-        e.preventDefault();
-        // Stash the event so it can be triggered later.
-        deferredPrompt = e;
+    // Add scroll event for floating controls
+    window.addEventListener('scroll', function() {
+        const floatingControls = document.querySelector('.floating-controls');
+        if (window.scrollY > 100) {
+            floatingControls.style.opacity = '0.9';
+        } else {
+            floatingControls.style.opacity = '1';
+        }
     });
 });
-
-// Register service worker for PWA
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-                console.log('SW registered: ', registration);
-            })
-            .catch((registrationError) => {
-                console.log('SW registration failed: ', registrationError);
-            });
-    });
-}
