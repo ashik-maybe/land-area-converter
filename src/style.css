@@ -601,6 +601,7 @@ select option:hover {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    cursor: pointer;
 }
 
 .github-btn:hover {
@@ -613,6 +614,7 @@ select option:hover {
     background: linear-gradient(135deg, var(--accent-color-1) 0%, var(--accent-color-2) 100%);
     color: white;
     font-weight: 600;
+    border: none;
 }
 
 .chart-link:hover {
@@ -620,24 +622,151 @@ select option:hover {
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: var(--glass-bg);
+    border-radius: 25px;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    box-shadow: var(--shadow-heavy);
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow: hidden;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    padding: 25px 30px;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--header-text);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.modal-close {
+    background: var(--control-btn-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.modal-close:hover {
+    background: var(--control-btn-hover);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 30px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.chart-section {
+    margin-bottom: 30px;
+}
+
+.chart-section h3 {
+    color: var(--category-header);
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--glass-border);
+    font-weight: 600;
+}
+
+.chart-item {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 12px;
+    border: 1px solid var(--glass-border);
+    transition: all 0.2s ease;
+}
+
+.chart-item:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.chart-item p {
+    margin: 0;
+    color: var(--text-color);
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
+
 /* Scrollbar styling */
-.results-column::-webkit-scrollbar {
+.results-column::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar {
     width: 10px;
 }
 
-.results-column::-webkit-scrollbar-track {
+.results-column::-webkit-scrollbar-track,
+.modal-body::-webkit-scrollbar-track {
     background: var(--scrollbar-track);
     border-radius: 5px;
 }
 
-.results-column::-webkit-scrollbar-thumb {
+.results-column::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb {
     background: var(--scrollbar-thumb);
     border-radius: 5px;
     border: 2px solid transparent;
     background-clip: content-box;
 }
 
-.results-column::-webkit-scrollbar-thumb:hover {
+.results-column::-webkit-scrollbar-thumb:hover,
+.modal-body::-webkit-scrollbar-thumb:hover {
     background: rgba(102, 126, 234, 0.5);
     border: 1px solid transparent;
     background-clip: content-box;
@@ -700,6 +829,20 @@ select option:hover {
     .language-toggle {
         padding: 10px 14px;
         font-size: 12px;
+    }
+
+    .modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+
+    .modal-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .modal-body {
+        padding: 20px;
+        max-height: 65vh;
     }
 }
 
@@ -770,6 +913,14 @@ select option:hover {
         width: 100%;
         max-width: 250px;
         margin: 0 auto;
+    }
+
+    .chart-section h3 {
+        font-size: 1.2rem;
+    }
+
+    .chart-item p {
+        font-size: 0.95rem;
     }
 }
 
