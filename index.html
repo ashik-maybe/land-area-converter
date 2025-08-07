@@ -11,12 +11,15 @@
 </head>
 <body>
     <div class="background-overlay"></div>
+    <div class="floating-controls">
+        <button class="control-btn theme-toggle" id="themeToggle">🌙</button>
+        <button class="control-btn language-toggle" id="languageToggle">🇧🇩 বাংলা</button>
+    </div>
+
     <div class="container">
         <div class="header">
             <h1>📐 Bangladeshi Land Measurement Converter</h1>
             <p>Convert between traditional and modern land measurement units</p>
-            <button class="header-btn language-toggle" id="languageToggle">🇧🇩 বাংলা</button>
-            <button class="header-btn theme-toggle" id="themeToggle">🌙</button>
         </div>
 
         <div class="converter">
@@ -36,7 +39,6 @@
                     <option value="kani">Kani</option>
                     <option value="gonda">Gonda</option>
                     <option value="kora">Kora</option>
-                    <option value="kattah">Kattah</option>
                     <option value="paki">Paki</option>
 
                     <!-- Sub-units -->
@@ -58,9 +60,15 @@
 
             <button class="convert-btn" onclick="convert()">Convert</button>
 
-            <div class="results" id="results" style="display: none;">
-                <h3>Conversion Results:</h3>
-                <div id="resultList"></div>
+            <div class="results-container" id="resultsContainer" style="display: none;">
+                <div class="results-column">
+                    <h3>Traditional Units</h3>
+                    <div id="traditionalResults"></div>
+                </div>
+                <div class="results-column">
+                    <h3>International Units</h3>
+                    <div id="internationalResults"></div>
+                </div>
             </div>
 
             <div class="popular-conversions">
@@ -77,10 +85,13 @@
 
         <div class="footer">
             <div class="personal-flair">
-                <p>Made with ❤️ by <a href="https://github.com/ashik-maybe" target="_blank">@ashik-maybe</a></p>
+                <p>Made with 🤖 by <a href="https://github.com/ashik-maybe" target="_blank">@ashik-maybe</a></p>
                 <div class="github-buttons">
                     <a href="https://github.com/ashik-maybe" target="_blank" class="github-btn">
                         <span>⭐ Star on GitHub</span>
+                    </a>
+                    <a href="#" target="_blank" class="github-btn chart-link">
+                        <span>📊 Ultimate Chart</span>
                     </a>
                 </div>
             </div>
