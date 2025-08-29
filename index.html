@@ -1,96 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bangladeshi Land Measurement Converter</title>
-    <link rel="stylesheet" href="src/style.css">
-    <link rel="icon" href="image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🇧🇩 জমি পরিমাপ ক্যালকুলেটর</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="src/style.css" />
 </head>
-<body>
-    <div class="background-overlay"></div>
-    <div class="floating-controls">
-        <button class="control-btn theme-toggle" id="themeToggle">🌙</button>
-        <button class="control-btn language-toggle" id="languageToggle">🇧🇩 বাংলা</button>
-    </div>
+<body class="bn">
+  <div class="bg-pattern"></div>
 
-    <div class="container">
-        <div class="header">
-            <h1>📐 Land Measurement Converter</h1>
+  <div class="container" id="app">
+    <main class="app-card">
+      <!-- Header -->
+      <header class="card-header">
+        <div class="title-group">
+          <h1 class="app-title">
+            <i class="fas fa-ruler-triangle glow"></i>
+            <span class="en" style="display:none;">Land Area Calculator</span>
+            <span class="bn">জমি পরিমাপ ক্যালকুলেটর</span>
+          </h1>
+          <p class="app-subtitle en" style="display:none;">Bangladesh's Land Unit Converter</p>
+          <p class="app-subtitle bn">বাংলাদেশের জমির একক রূপান্তর</p>
         </div>
 
-        <div class="converter">
-            <div class="input-group">
-                <label for="value">Enter Value:</label>
-                <input type="number" id="value" placeholder="Enter amount" step="any" value="1">
-            </div>
+        <div class="header-controls">
+          <!-- Region Selector -->
+          <div class="control-item system-tip">
+            <select id="system-select" class="select mini" title="ঢাকা: ৪০ কানি, রাজশাহী: ১২০ কানি">
+              <option value="dhaka">🌆 ঢাকা / চট্টগ্রাম</option>
+              <option value="rajshahi">🌾 রাজশাহী / খুলনা</option>
+            </select>
+            <i class="fas fa-info-circle tooltip" title="ঢাকা: ৪০ শতাংশ/কানি | রাজশাহী: ১২০ শতাংশ/কানি"></i>
+          </div>
 
-            <div class="input-group">
-                <label for="fromUnit">From Unit:</label>
-                <select id="fromUnit">
-                    <!-- Traditional Bangladeshi Units -->
-                    <option value="katha">Katha</option>
-                    <option value="bigha">Bigha</option>
-                    <option value="decimal">Decimal</option>
-                    <option value="shotok">Shotok</option>
-                    <option value="kani">Kani</option>
-                    <option value="gonda">Gonda</option>
-                    <option value="kora">Kora</option>
-                    <option value="paki">Paki</option>
-                    <option value="kranti">Kranti</option>
-                    <option value="til">Til</option>
-                    <option value="ojutangsho">Ojutangsho</option>
-                    <option value="kattah">Kattah</option>
+          <!-- Theme Toggle -->
+          <button id="theme-toggle" class="btn btn-icon" title="ডার্ক মোড চালু করুন">
+            <i class="fas fa-moon"></i>
+          </button>
 
-                    <!-- International Units -->
-                    <option value="acre">Acre</option>
-                    <option value="hectare">Hectare</option>
-                    <option value="sqft">Square Feet</option>
-                    <option value="sqmeter">Square Meter</option>
-                    <option value="sqyard">Square Yard</option>
-                    <option value="sqinch">Square Inch</option>
-                    <option value="sqlink">Square Link</option>
-                    <option value="sqhat">Square Hat</option>
-                </select>
-            </div>
+          <!-- Language Toggle -->
+          <button id="lang-toggle" class="btn btn-icon flag-btn" title="ভাষা পরিবর্তন করুন">
+            <i class="flag-icon en" style="display:none;"><img src="https://flagcdn.com/20x15/us.png" alt="EN"></i>
+            <i class="flag-icon bn"><img src="https://flagcdn.com/20x15/bd.png" alt="BN"></i>
+          </button>
+        </div>
+      </header>
 
-            <button class="convert-btn" onclick="convert()">Convert</button>
-
-            <div class="results-container" id="resultsContainer" style="display: none;">
-                <div class="results-column">
-                    <h3>Traditional Units</h3>
-                    <div id="traditionalResults"></div>
-                </div>
-                <div class="results-column">
-                    <h3>International Units</h3>
-                    <div id="internationalResults"></div>
-                </div>
-            </div>
-
-            <div class="popular-conversions">
-                <h3>💡 Common Conversions</h3>
-                <div class="conversion-examples">
-                    <div class="example">1 Bigha = 20 Katha = 33 Decimal = 14,400 sq ft</div>
-                    <div class="example">1 Kani = 20 Gonda = 40 Shotok = 17,280 sq ft</div>
-                    <div class="example">1 Acre = 3 Bigha 8 Chotak ≈ 43,560 sq ft</div>
-                    <div class="example">1 Katha ≈ 720 sq ft ≈ 1.65 Shotok</div>
-                    <div class="example">1 Hectare = 2.47 Acre = 100 Ayer</div>
-                </div>
-            </div>
+      <!-- Unit & Value Input -->
+      <div class="input-grid">
+        <div class="input-group">
+          <label for="unit-select" class="label-primary bn">থেকে রূপান্তর করুন</label>
+          <label for="unit-select" class="label-primary en" style="display:none;">Convert From</label>
+          <select id="unit-select" class="select large"></select>
         </div>
 
-        <div class="footer">
-            <div class="personal-flair">
-                <p>Made with 🤖 by <a href="https://github.com/ashik-maybe" target="_blank">@ashik-maybe</a></p>
-                <div class="github-buttons">
-                    <a href="https://github.com/ashik-maybe/bangladeshi-land-converter" target="_blank" class="github-btn">
-                        <span>⭐ Star on GitHub</span>
-                    </a>
-                </div>
-            </div>
+        <div class="input-group">
+          <label for="value-input" class="label-primary bn">মান লিখুন</label>
+          <label for="value-input" class="label-primary en" style="display:none;">Enter Value</label>
+          <input type="number" id="value-input" class="large" placeholder="0.0" step="any" min="0" autofocus />
         </div>
-    </div>
+      </div>
 
-    <script src="src/main.js"></script>
+      <!-- Results -->
+      <div class="results-container">
+        <div class="results-header">
+          <h3>
+            <i class="fas fa-exchange-alt"></i>
+            <span class="en" style="display:none;">Conversions</span>
+            <span class="bn">রূপান্তরগুলো</span>
+          </h3>
+        </div>
+        <div id="results" class="results">
+          <div class="placeholder">
+            <i class="fas fa-balance-scale fa-2x opacity"></i>
+            <p class="en" style="display:none;">Enter a value to see all conversions</p>
+            <p class="bn">সব রূপান্তর দেখতে মান লিখুন</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p class="en" style="display:none;">Precision-built for Bangladeshi land measurement</p>
+      <p class="bn">বাংলাদেশের জমি পরিমাপের জন্য নির্ভুলভাবে তৈরি</p>
+    </footer>
+  </div>
+
+  <script src="src/main.js"></script>
 </body>
 </html>

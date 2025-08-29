@@ -1,335 +1,188 @@
-// Comprehensive conversion system using Square Feet as base unit
-class LandConverter {
-    constructor() {
-        // All conversions based on Square Feet (keeping both katha and kattah for completeness)
-        this.conversionFactors = {
-            // Traditional Bangladeshi Units
-            'katha': 720,           // 1 Katha = 720 sq ft
-            'bigha': 14400,         // 1 Bigha = 20 Katha = 14,400 sq ft
-            'decimal': 435.6,       // 1 Decimal = 435.6 sq ft
-            'shotok': 435.6,        // 1 Shotok = 1 Decimal = 435.6 sq ft
-            'paki': 14400,          // 1 Paki = 1 Bigha = 14,400 sq ft
-            'kani': 17280,          // 1 Kani = 20 Gonda = 17,280 sq ft
-            'gonda': 864,           // 1 Gonda = 4 Kora = 864 sq ft
-            'kora': 216,            // 1 Kora = 3 Kranti = 216 sq ft
-            'kranti': 72,           // 1 Kranti = 20 Til = 72 sq ft
-            'til': 3.6,             // 1 Til = 3.6 sq ft
-            'ojutangsho': 4.356,    // 1 Ojutangsho = 1/100 Shotok = 4.356 sq ft
-            'kattah': 720,          // 1 Kattah = 1 Katha = 720 sq ft
+// ====== Land Calculator Engine ======
+const LandCalculator = {
+  systems: {
+    dhaka: { kaniInDecimal: 40 },
+    rajshahi: { kaniInDecimal: 120 }
+  },
 
-            // International Units
-            'acre': 43560,          // 1 Acre = 43,560 sq ft
-            'hectare': 107639,      // 1 Hectare = 107,639 sq ft
-            'sqft': 1,              // Base unit
-            'sqmeter': 10.764,      // 1 sq meter = 10.764 sq ft
-            'sqyard': 9,            // 1 sq yard = 9 sq ft
-            'sqinch': 0.006944,     // 1 sq inch = 0.006944 sq ft
-            'sqlink': 0.04356,      // 1 sq link = 0.04356 sq ft
-            'sqhat': 0.2269,        // 1 sq hat ≈ 0.2269 sq ft
-        };
+  base: {
+    ojutangsho: 1,
+    decimal: 100,
+    square_feet: 4.356,
+    square_meter: 0.40468564224
+  },
 
-        // Unit display names
-        this.unitNames = {
-            'katha': 'Katha',
-            'bigha': 'Bigha',
-            'decimal': 'Decimal',
-            'shotok': 'Shotok',
-            'paki': 'Paki',
-            'kani': 'Kani',
-            'gonda': 'Gonda',
-            'kora': 'Kora',
-            'kranti': 'Kranti',
-            'til': 'Til',
-            'ojutangsho': 'Ojutangsho',
-            'kattah': 'Kattah',
-            'acre': 'Acre',
-            'hectare': 'Hectare',
-            'sqft': 'Square Feet',
-            'sqmeter': 'Square Meter',
-            'sqyard': 'Square Yard',
-            'sqinch': 'Square Inch',
-            'sqlink': 'Square Link',
-            'sqhat': 'Square Hat'
-        };
+  getUnits(system = 'dhaka') {
+    const kaniInDecimal = this.systems[system].kaniInDecimal;
+    const gondaInDecimal = kaniInDecimal / 20;
+    const koraInDecimal = gondaInDecimal / 4;
 
-        // Bengali unit names
-        this.bengaliUnits = {
-            'katha': 'কাঠা',
-            'bigha': 'বিঘা',
-            'decimal': 'ডেসিমেল',
-            'shotok': 'শতক',
-            'paki': 'পাকি',
-            'kani': 'কানি',
-            'gonda': 'গন্ডা',
-            'kora': 'কোরা',
-            'kranti': 'ক্রান্তি',
-            'til': 'তিল',
-            'ojutangsho': 'অজুতাংশ',
-            'kattah': 'কাট্টা',
-            'acre': 'একর',
-            'hectare': 'হেক্টর',
-            'sqft': 'বর্গফুট',
-            'sqmeter': 'বর্গমিটার',
-            'sqyard': 'বর্গগজ',
-            'sqinch': 'বর্গইঞ্চি',
-            'sqlink': 'বর্গলিংক',
-            'sqhat': 'বর্গহাট'
-        };
+    return [
+      { id: 'ojutangsho', name: { en: 'Ojutangsho', bn: 'ওজুতাংশ' }, factor: this.base.ojutangsho },
+      { id: 'decimal', name: { en: 'Decimal / Shotangsho', bn: 'ডেসিমাল / শতাংশ' }, factor: this.base.decimal },
+      { id: 'katha', name: { en: 'Katha', bn: 'কাঠা' }, factor: 165 },
+      { id: 'bigha', name: { en: 'Bigha / Paki', bn: 'বিঘা / পাকি' }, factor: 3300 },
+      { id: 'acre', name: { en: 'Acre', bn: 'একর' }, factor: 10000 },
+      { id: 'kani', name: { en: 'Kani', bn: 'কানি' }, factor: kaniInDecimal * 100 },
+      { id: 'gonda', name: { en: 'Gonda', bn: 'গন্ডা' }, factor: gondaInDecimal * 100 },
+      { id: 'kora', name: { en: 'Kora', bn: 'কড়া' }, factor: koraInDecimal * 100 },
+      { id: 'chotak', name: { en: 'Chotak', bn: 'ছটাক' }, factor: 20 },
+      { id: 'square_feet', name: { en: 'Square Feet', bn: 'বর্গফুট' }, factor: this.base.square_feet },
+      { id: 'square_meter', name: { en: 'Square Meter', bn: 'বর্গমিটার' }, factor: this.base.square_meter },
+      { id: 'square_yard', name: { en: 'Square Yard', bn: 'বর্গগজ' }, factor: 0.484 },
+      { id: 'hectare', name: { en: 'Hectare', bn: 'হেক্টর' }, factor: 24710.5381467165 },
+      { id: 'ayor', name: { en: 'Ayor', bn: 'এয়র' }, factor: 247.105381467165 }
+    ];
+  },
 
-        // Bengali labels
-        this.bengaliLabels = {
-            'converterTitle': 'জমি পরিমাপ কনভার্টার',
-            'enterValue': 'মান লিখুন:',
-            'fromUnit': 'একক থেকে:',
-            'convertBtn': 'রূপান্তর করুন',
-            'traditionalUnits': 'ঐতিহ্যবাহী একক',
-            'internationalUnits': 'আন্তর্জাতিক একক',
-            'commonConversions': 'সাধারণ রূপান্তর',
-            'conversionResults': 'রূপান্তর ফলাফল:',
-        };
-    }
+  toBase(value, fromUnitId, system) {
+    const unit = this.getUnits(system).find(u => u.id === fromUnitId);
+    return unit ? value * unit.factor : 0;
+  },
 
-    // Convert from any unit to Square Feet
-    toSquareFeet(value, fromUnit) {
-        return value * this.conversionFactors[fromUnit];
-    }
+  fromBase(baseValue, toUnitId, system) {
+    const unit = this.getUnits(system).find(u => u.id === toUnitId);
+    if (!unit) return '0';
+    const raw = baseValue / unit.factor;
+    return Number.isInteger(raw) ? raw.toString() : raw.toFixed(6).replace(/\.?0+$/, '');
+  },
 
-    // Convert from Square Feet to any unit
-    fromSquareFeet(sqftValue, toUnit) {
-        return sqftValue / this.conversionFactors[toUnit];
-    }
+  getAllConversions(value, fromUnitId, system) {
+    if (value <= 0 || isNaN(value)) return [];
+    const base = this.toBase(value, fromUnitId, system);
+    return this.getUnits(system)
+      .filter(u => u.id !== fromUnitId)
+      .map(u => ({
+        name: u.name,
+        value: this.fromBase(base, u.id, system)
+      }));
+  }
+};
 
-    // Main conversion function
-    convert(value, fromUnit) {
-        const sqftValue = this.toSquareFeet(value, fromUnit);
-        const results = {};
+// DOM Elements
+const systemSelect = document.getElementById('system-select');
+const unitSelect = document.getElementById('unit-select');
+const valueInput = document.getElementById('value-input');
+const resultsDiv = document.getElementById('results');
+const themeToggle = document.getElementById('theme-toggle');
+const langToggle = document.getElementById('lang-toggle');
+const app = document.getElementById('app');
 
-        for (let unit in this.conversionFactors) {
-            results[unit] = this.fromSquareFeet(sqftValue, unit);
-        }
-
-        return results;
-    }
-
-    // Get unit display name
-    getUnitName(unit, language = 'en') {
-        if (language === 'bn' && this.bengaliUnits[unit]) {
-            return this.bengaliUnits[unit];
-        }
-        return this.unitNames[unit] || unit;
-    }
+// Populate Units
+function populateUnits() {
+  const system = systemSelect.value;
+  const units = LandCalculator.getUnits(system);
+  unitSelect.innerHTML = '';
+  units.forEach(u => {
+    const option = document.createElement('option');
+    option.value = u.id;
+    option.textContent = getUnitName(u);
+    unitSelect.appendChild(option);
+  });
+  renderResults(); // Re-render after change
 }
 
-// Theme management
-class ThemeManager {
-    constructor() {
-        this.currentTheme = localStorage.getItem('theme') || 'light';
-        this.themeToggle = document.getElementById('themeToggle');
-        this.init();
-    }
-
-    init() {
-        this.setTheme(this.currentTheme);
-        this.themeToggle.addEventListener('click', () => this.toggleTheme());
-    }
-
-    setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        this.currentTheme = theme;
-        localStorage.setItem('theme', theme);
-        this.updateToggleText();
-    }
-
-    toggleTheme() {
-        const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
-        this.setTheme(newTheme);
-    }
-
-    updateToggleText() {
-        this.themeToggle.textContent = this.currentTheme === 'light' ? '🌙' : '☀️';
-    }
+// Get name based on language
+function getUnitName(unit) {
+  return document.body.classList.contains('bn') ? unit.name.bn : unit.name.en;
 }
 
-// Language management
-class LanguageManager {
-    constructor(converter) {
-        this.converter = converter;
-        this.currentLanguage = localStorage.getItem('language') || 'en';
-        this.languageToggle = document.getElementById('languageToggle');
-        this.init();
-    }
+// Render Results
+function renderResults() {
+  const value = parseFloat(valueInput.value);
+  const unitId = unitSelect.value;
+  const system = systemSelect.value;
 
-    init() {
-        this.updateToggleText();
-        this.languageToggle.addEventListener('click', () => this.toggleLanguage());
-        this.applyLanguage();
-    }
+  resultsDiv.innerHTML = '';
 
-    toggleLanguage() {
-        this.currentLanguage = this.currentLanguage === 'en' ? 'bn' : 'en';
-        localStorage.setItem('language', this.currentLanguage);
-        this.updateToggleText();
-        this.applyLanguage();
-        // Re-run conversion to update display
-        convert();
-    }
+  if (isNaN(value) || value <= 0) {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'placeholder fadeIn';
+    placeholder.innerHTML = `
+      <i class="fas fa-balance-scale fa-2x opacity"></i>
+      <p class="en" style="display:none;">Enter a value to see all conversions</p>
+      <p class="bn">সব রূপান্তর দেখতে মান লিখুন</p>
+    `;
+    resultsDiv.appendChild(placeholder);
+    return;
+  }
 
-    updateToggleText() {
-        this.languageToggle.textContent = this.currentLanguage === 'en' ? '🇧🇩 বাংলা' : '🇺🇸 English';
-    }
+  const results = LandCalculator.getAllConversions(value, unitId, system);
 
-    applyLanguage() {
-        if (this.currentLanguage === 'bn') {
-            document.body.classList.add('bengali-mode');
-            // Update static text
-            document.querySelector('.header h1').textContent = this.converter.bengaliLabels.converterTitle;
-            document.querySelector('label[for="value"]').textContent = this.converter.bengaliLabels.enterValue;
-            document.querySelector('label[for="fromUnit"]').textContent = this.converter.bengaliLabels.fromUnit;
-            document.querySelector('.convert-btn').textContent = this.converter.bengaliLabels.convertBtn;
-            if (document.querySelector('.results-column:first-child h3')) {
-                document.querySelector('.results-column:first-child h3').textContent = this.converter.bengaliLabels.traditionalUnits;
-            }
-            if (document.querySelector('.results-column:last-child h3')) {
-                document.querySelector('.results-column:last-child h3').textContent = this.converter.bengaliLabels.internationalUnits;
-            }
-            document.querySelector('.popular-conversions h3').textContent = this.converter.bengaliLabels.commonConversions;
-            // Update unit names in dropdown
-            this.updateDropdownText();
-        } else {
-            document.body.classList.remove('bengali-mode');
-            // Reset to English
-            document.querySelector('.header h1').textContent = 'Land Measurement Converter';
-            document.querySelector('label[for="value"]').textContent = 'Enter Value:';
-            document.querySelector('label[for="fromUnit"]').textContent = 'From Unit:';
-            document.querySelector('.convert-btn').textContent = 'Convert';
-            if (document.querySelector('.results-column:first-child h3')) {
-                document.querySelector('.results-column:first-child h3').textContent = 'Traditional Units';
-            }
-            if (document.querySelector('.results-column:last-child h3')) {
-                document.querySelector('.results-column:last-child h3').textContent = 'International Units';
-            }
-            document.querySelector('.popular-conversions h3').textContent = '💡 Common Conversions';
-            this.updateDropdownText();
-        }
-    }
+  results.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'result-card pulse';
+    setTimeout(() => card.classList.remove('pulse'), 300);
 
-    updateDropdownText() {
-        const select = document.getElementById('fromUnit');
-        const options = select.options;
-        for (let i = 0; i < options.length; i++) {
-            const unit = options[i].value;
-            if (this.currentLanguage === 'bn' && this.converter.bengaliUnits[unit]) {
-                options[i].textContent = this.converter.bengaliUnits[unit];
-            } else {
-                options[i].textContent = this.converter.getUnitName(unit, 'en');
-            }
-        }
-    }
-
-    getUnitName(unit) {
-        return this.converter.getUnitName(unit, this.currentLanguage);
-    }
+    const name = document.body.classList.contains('bn') ? r.name.bn : r.name.en;
+    card.innerHTML = `<h3>${name}</h3><p>${r.value}</p>`;
+    resultsDiv.appendChild(card);
+  });
 }
 
-// Initialize converter
-const converter = new LandConverter();
+// Toggle Language
+langToggle.addEventListener('click', () => {
+  const isBangla = document.body.classList.contains('bn');
 
-// Global managers
-let languageManager;
+  // Switch to English
+  if (isBangla) {
+    document.body.classList.remove('bn');
+    document.body.classList.add('en');
+    document.documentElement.lang = 'en';
+  }
+  // Switch to Bangla
+  else {
+    document.body.classList.remove('en');
+    document.body.classList.add('bn');
+    document.documentElement.lang = 'bn';
+  }
 
-function convert() {
-    const inputValue = parseFloat(document.getElementById('value').value);
-    const fromUnit = document.getElementById('fromUnit').value;
+  // Toggle flag icons
+  document.querySelectorAll('.flag-icon').forEach(el => {
+    el.style.display = el.classList.contains('bn') ? 'inline' : 'none';
+  });
 
-    if (isNaN(inputValue)) {
-        alert('Please enter a valid number');
-        return;
-    }
+  // Update all text
+  document.querySelectorAll('.en, .bn').forEach(el => {
+    el.style.display = el.classList.contains('bn') === document.body.classList.contains('bn') ? 'inline' : 'none';
+  });
 
-    try {
-        const results = converter.convert(inputValue, fromUnit);
-        displayResults(results, inputValue, fromUnit);
-    } catch (error) {
-        console.error('Conversion error:', error);
-        alert('Error in conversion. Please try again.');
-    }
-}
+  populateUnits();
+});
 
-function displayResults(results, inputValue, fromUnit) {
-    const resultsContainer = document.getElementById('resultsContainer');
-    const traditionalResults = document.getElementById('traditionalResults');
-    const internationalResults = document.getElementById('internationalResults');
+// Toggle Theme
+themeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  const icon = themeToggle.querySelector('i');
+  icon.classList.toggle('fa-moon');
+  icon.classList.toggle('fa-sun');
+});
 
-    // Sort units by category
-    const traditionalUnits = ['bigha', 'katha', 'kattah', 'paki', 'decimal', 'shotok', 'kani', 'gonda', 'kora', 'kranti', 'til', 'ojutangsho'];
-    const internationalUnits = ['acre', 'hectare', 'sqft', 'sqmeter', 'sqyard', 'sqinch', 'sqlink', 'sqhat'];
+// System Change
+systemSelect.addEventListener('change', populateUnits);
+unitSelect.addEventListener('change', renderResults);
+valueInput.addEventListener('input', renderResults);
 
-    // Generate traditional units HTML
-    let traditionalHtml = '';
-    traditionalUnits.forEach(unit => {
-        if (unit !== fromUnit) { // Don't show the input unit
-            traditionalHtml += `
-                <div class="result-item">
-                    <span class="unit-name">${languageManager.getUnitName(unit)}:</span>
-                    <span class="unit-value">${formatNumber(results[unit])}</span>
-                </div>
-            `;
-        }
-    });
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  // Default to Bangla
+  if (!document.body.classList.contains('en')) {
+    document.body.classList.add('bn');
+  }
+  populateUnits();
+  valueInput.focus();
+});
 
-    // Generate international units HTML
-    let internationalHtml = '';
-    internationalUnits.forEach(unit => {
-        if (unit !== fromUnit) { // Don't show the input unit
-            internationalHtml += `
-                <div class="result-item">
-                    <span class="unit-name">${languageManager.getUnitName(unit)}:</span>
-                    <span class="unit-value">${formatNumber(results[unit])}</span>
-                </div>
-            `;
-        }
-    });
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  populateUnits();
 
-    traditionalResults.innerHTML = traditionalHtml;
-    internationalResults.innerHTML = internationalHtml;
-    resultsContainer.style.display = 'grid';
-}
+  // 🔥 Set default unit to 'decimal'
+  unitSelect.value = 'decimal';
 
-function formatNumber(num) {
-    // Format large numbers with commas and appropriate decimal places
-    if (Math.abs(num) >= 1000000) {
-        return parseFloat(num.toFixed(2)).toLocaleString();
-    } else if (Math.abs(num) >= 1000) {
-        return parseFloat(num.toFixed(3)).toLocaleString();
-    } else if (Math.abs(num) >= 1) {
-        return parseFloat(num.toFixed(4)).toString();
-    } else {
-        return parseFloat(num.toFixed(6)).toString();
-    }
-}
+  // Trigger conversion to show results based on default
+  renderResults();
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize theme manager
-    new ThemeManager();
-
-    // Initialize language manager
-    languageManager = new LanguageManager(converter);
-
-    // Initial conversion
-    convert();
-
-    // Add real-time conversion when user types
-    document.getElementById('value').addEventListener('input', convert);
-    document.getElementById('fromUnit').addEventListener('change', convert);
-
-    // Add scroll event for floating controls
-    window.addEventListener('scroll', function() {
-        const floatingControls = document.querySelector('.floating-controls');
-        if (window.scrollY > 100) {
-            floatingControls.style.opacity = '0.9';
-        } else {
-            floatingControls.style.opacity = '1';
-        }
-    });
+  // Focus input
+  valueInput.focus();
 });
