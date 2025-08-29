@@ -173,16 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
   valueInput.focus();
 });
 
-// Initialize
 document.addEventListener('DOMContentLoaded', () => {
   populateUnits();
-
-  // 🔥 Set default unit to 'decimal'
-  unitSelect.value = 'decimal';
-
-  // Trigger conversion to show results based on default
-  renderResults();
-
-  // Focus input
+  unitSelect.value = 'decimal';   // ← This line makes Decimal default
+  valueInput.value = '1';         // Optional: auto-fill 1
+  renderResults();                // Show instant results
   valueInput.focus();
 });
