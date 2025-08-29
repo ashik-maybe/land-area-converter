@@ -19,7 +19,7 @@ const LandCalculator = {
 
     return [
       { id: 'ojutangsho', name: { en: 'Ojutangsho', bn: 'ওজুতাংশ' }, factor: this.base.ojutangsho },
-      { id: 'decimal', name: { en: 'Decimal / Shotangsho', bn: 'ডেসিমাল / শতাংশ' }, factor: this.base.decimal },
+      { id: 'decimal', name: { en: 'Shotangsho', bn: 'শতাংশ' }, factor: this.base.decimal },
       { id: 'katha', name: { en: 'Katha', bn: 'কাঠা' }, factor: 165 },
       { id: 'bigha', name: { en: 'Bigha / Paki', bn: 'বিঘা / পাকি' }, factor: 3300 },
       { id: 'acre', name: { en: 'Acre', bn: 'একর' }, factor: 10000 },
