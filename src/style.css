@@ -1,5 +1,5 @@
 /* Google Fonts with Bangla Support */
-@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Poppins:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@700;800&display=swap');
 
 * {
   margin: 0;
@@ -9,7 +9,7 @@
 }
 
 body {
-  font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
+  font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
   background: linear-gradient(135deg, #1e3c72, #2a5298);
   background-attachment: fixed;
   color: #2c3e50;
@@ -17,10 +17,6 @@ body {
   padding: 20px;
   position: relative;
   overflow-x: hidden;
-}
-
-body.en {
-  font-family: 'Inter', system-ui, sans-serif;
 }
 
 body.dark {
@@ -83,7 +79,7 @@ body.dark {
 }
 
 .app-title {
-  font-family: 'Poppins', 'Hind Siliguri', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 2rem;
   font-weight: 800;
   color: #2980b9;
@@ -118,7 +114,7 @@ body.dark {
   font-size: 0.9rem;
 }
 
-.system-tip .tooltip {
+.tooltip {
   color: #999;
   cursor: help;
 }
@@ -153,10 +149,6 @@ body.dark {
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-.flag-btn img {
-  border-radius: 4px;
-}
-
 /* Input Grid */
 .input-grid {
   display: grid;
@@ -172,7 +164,6 @@ body.dark {
   color: #2c3e50;
   display: block;
   margin-bottom: 8px;
-  text-align: left;
 }
 
 .dark .label-primary {
@@ -189,7 +180,6 @@ body.dark {
   outline: none;
   background: white;
   font-family: inherit;
-  transition: border 0.3s;
 }
 
 .select.large, #value-input.large {
@@ -334,12 +324,6 @@ body.dark {
   text-shadow: none;
 }
 
-/* Language Toggle */
-.en { display: none; }
-.bn { display: inline; }
-body.en .en { display: inline; }
-body.en .bn { display: none; }
-
 /* Responsive */
 @media (max-width: 768px) {
   .input-grid {
@@ -348,11 +332,6 @@ body.en .bn { display: none; }
 
   .header-controls {
     justify-content: flex-end;
-    flex-direction: row;
-  }
-
-  .control-item {
-    flex-direction: row;
   }
 
   .app-title {

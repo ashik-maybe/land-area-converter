@@ -1,4 +1,4 @@
-// ====== Land Calculator Engine ======
+// ====== Land Calculator Engine (Bangla Only) ======
 const LandCalculator = {
   systems: {
     dhaka: { kaniInDecimal: 40 },
@@ -12,27 +12,31 @@ const LandCalculator = {
     square_meter: 0.40468564224
   },
 
+  // All units in Bangla only
   getUnits(system = 'dhaka') {
     const kaniInDecimal = this.systems[system].kaniInDecimal;
     const gondaInDecimal = kaniInDecimal / 20;
     const koraInDecimal = gondaInDecimal / 4;
 
-    return [
-      { id: 'ojutangsho', name: { en: 'Ojutangsho', bn: 'ওজুতাংশ' }, factor: this.base.ojutangsho },
-      { id: 'decimal', name: { en: 'Shotangsho', bn: 'শতাংশ' }, factor: this.base.decimal },
-      { id: 'katha', name: { en: 'Katha', bn: 'কাঠা' }, factor: 165 },
-      { id: 'bigha', name: { en: 'Bigha / Paki', bn: 'বিঘা / পাকি' }, factor: 3300 },
-      { id: 'acre', name: { en: 'Acre', bn: 'একর' }, factor: 10000 },
-      { id: 'kani', name: { en: 'Kani', bn: 'কানি' }, factor: kaniInDecimal * 100 },
-      { id: 'gonda', name: { en: 'Gonda', bn: 'গন্ডা' }, factor: gondaInDecimal * 100 },
-      { id: 'kora', name: { en: 'Kora', bn: 'কড়া' }, factor: koraInDecimal * 100 },
-      { id: 'chotak', name: { en: 'Chotak', bn: 'ছটাক' }, factor: 20 },
-      { id: 'square_feet', name: { en: 'Square Feet', bn: 'বর্গফুট' }, factor: this.base.square_feet },
-      { id: 'square_meter', name: { en: 'Square Meter', bn: 'বর্গমিটার' }, factor: this.base.square_meter },
-      { id: 'square_yard', name: { en: 'Square Yard', bn: 'বর্গগজ' }, factor: 0.484 },
-      { id: 'hectare', name: { en: 'Hectare', bn: 'হেক্টর' }, factor: 24710.5381467165 },
-      { id: 'ayor', name: { en: 'Ayor', bn: 'এয়র' }, factor: 247.105381467165 }
+    const units = [
+      { id: 'ojutangsho', name: 'অজুতাংশ', factor: this.base.ojutangsho },
+      { id: 'decimal', name: 'শতাংশ', factor: this.base.decimal },
+      { id: 'katha', name: 'কাঠা', factor: 165 },
+      { id: 'bigha', name: 'বিঘা', factor: 3300 },
+      { id: 'acre', name: 'একর', factor: 10000 },
+      { id: 'kani', name: 'কানি', factor: kaniInDecimal * 100 },
+      { id: 'gonda', name: 'গন্ডা', factor: gondaInDecimal * 100 },
+      { id: 'kora', name: 'কড়া', factor: koraInDecimal * 100 },
+      { id: 'chotak', name: 'ছটাক', factor: 20 },
+      { id: 'square_feet', name: 'বর্গফুট', factor: this.base.square_feet },
+      { id: 'square_meter', name: 'বর্গমিটার', factor: this.base.square_meter },
+      { id: 'square_yard', name: 'বর্গগজ', factor: 0.484 },
+      { id: 'hectare', name: 'হেক্টর', factor: 24710.5381467165 },
+      { id: 'ayor', name: 'এয়র', factor: 247.105381467165 }
     ];
+
+    // Sort alphabetically by Bangla name
+    return units.sort((a, b) => a.name.localeCompare(b.name, 'bn'));
   },
 
   toBase(value, fromUnitId, system) {
@@ -65,10 +69,8 @@ const unitSelect = document.getElementById('unit-select');
 const valueInput = document.getElementById('value-input');
 const resultsDiv = document.getElementById('results');
 const themeToggle = document.getElementById('theme-toggle');
-const langToggle = document.getElementById('lang-toggle');
-const app = document.getElementById('app');
 
-// Populate Units
+// Populate Units (Sorted)
 function populateUnits() {
   const system = systemSelect.value;
   const units = LandCalculator.getUnits(system);
@@ -76,15 +78,10 @@ function populateUnits() {
   units.forEach(u => {
     const option = document.createElement('option');
     option.value = u.id;
-    option.textContent = getUnitName(u);
+    option.textContent = u.name;
     unitSelect.appendChild(option);
   });
-  renderResults(); // Re-render after change
-}
-
-// Get name based on language
-function getUnitName(unit) {
-  return document.body.classList.contains('bn') ? unit.name.bn : unit.name.en;
+  renderResults();
 }
 
 // Render Results
@@ -100,8 +97,7 @@ function renderResults() {
     placeholder.className = 'placeholder fadeIn';
     placeholder.innerHTML = `
       <i class="fas fa-balance-scale fa-2x opacity"></i>
-      <p class="en" style="display:none;">Enter a value to see all conversions</p>
-      <p class="bn">সব রূপান্তর দেখতে মান লিখুন</p>
+      <p>সব রূপান্তর দেখতে মান লিখুন</p>
     `;
     resultsDiv.appendChild(placeholder);
     return;
@@ -113,44 +109,16 @@ function renderResults() {
     const card = document.createElement('div');
     card.className = 'result-card pulse';
     setTimeout(() => card.classList.remove('pulse'), 300);
-
-    const name = document.body.classList.contains('bn') ? r.name.bn : r.name.en;
-    card.innerHTML = `<h3>${name}</h3><p>${r.value}</p>`;
+    card.innerHTML = `<h3>${r.name}</h3><p>${r.value}</p>`;
     resultsDiv.appendChild(card);
   });
 }
 
-// Toggle Language
-langToggle.addEventListener('click', () => {
-  const isBangla = document.body.classList.contains('bn');
+// Event Listeners
+systemSelect.addEventListener('change', populateUnits);
+unitSelect.addEventListener('change', renderResults);
+valueInput.addEventListener('input', renderResults);
 
-  // Switch to English
-  if (isBangla) {
-    document.body.classList.remove('bn');
-    document.body.classList.add('en');
-    document.documentElement.lang = 'en';
-  }
-  // Switch to Bangla
-  else {
-    document.body.classList.remove('en');
-    document.body.classList.add('bn');
-    document.documentElement.lang = 'bn';
-  }
-
-  // Toggle flag icons
-  document.querySelectorAll('.flag-icon').forEach(el => {
-    el.style.display = el.classList.contains('bn') ? 'inline' : 'none';
-  });
-
-  // Update all text
-  document.querySelectorAll('.en, .bn').forEach(el => {
-    el.style.display = el.classList.contains('bn') === document.body.classList.contains('bn') ? 'inline' : 'none';
-  });
-
-  populateUnits();
-});
-
-// Toggle Theme
 themeToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark');
   const icon = themeToggle.querySelector('i');
@@ -158,25 +126,11 @@ themeToggle.addEventListener('click', () => {
   icon.classList.toggle('fa-sun');
 });
 
-// System Change
-systemSelect.addEventListener('change', populateUnits);
-unitSelect.addEventListener('change', renderResults);
-valueInput.addEventListener('input', renderResults);
-
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-  // Default to Bangla
-  if (!document.body.classList.contains('en')) {
-    document.body.classList.add('bn');
-  }
   populateUnits();
-  valueInput.focus();
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  populateUnits();
-  unitSelect.value = 'decimal';   // ← This line makes Decimal default
-  valueInput.value = '1';         // Optional: auto-fill 1
+  unitSelect.value = 'decimal';   // Default to Decimal
+  valueInput.value = '1';         // Pre-fill 1
   renderResults();                // Show instant results
   valueInput.focus();
 });
